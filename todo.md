@@ -8,10 +8,10 @@
 - [x] Add accessible dialogs, keyboard support, loading states, error states, and mobile layouts.
 - [x] Add unit tests for public registration and administrator authorization paths.
 - [x] Run type checks, tests, production build, browser verification, and repair discovered issues.
-- [ ] Create a private GitHub repository and push the completed source code.
+- [x] Push the completed source code to the user-specified GitHub repository.
 - [x] Save a final project release checkpoint and provide publishing guidance.
 - [x] Configure the supplied Supabase project URL, publishable key validation, and server-only secret-key access for secure membership operations.
 - [x] Translate and apply the membership database schema in the supplied Supabase project with secure row-level access controls.
 - [x] Replace the built-in membership persistence path with Supabase-backed registration, activation, and administrator review operations.
-- [ ] Push the completed project source to the supplied GitHub repository.
-- [ ] Re-run integration, type, test, build, and visual checks before saving the updated release checkpoint.
+- [x] Push the completed project source to the supplied GitHub repository.
+- [x] Re-run integration, type, test, build, and visual checks before saving the updated release checkpoint.
