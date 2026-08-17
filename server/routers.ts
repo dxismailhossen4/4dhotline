@@ -2,13 +2,13 @@ import { TRPCError } from "@trpc/server";
 import { createHash, randomInt } from "node:crypto";
 import { z } from "zod";
 import {
-  activateMembershipApplication,
-  approveMembershipApplication,
-  createMembershipApplication,
-  getMembershipApplicationById,
-  getMembershipApplicationForEmail,
-  listMembershipApplications,
-} from "./db";
+  activateSupabaseMembershipApplication,
+  approveSupabaseMembershipApplication,
+  createSupabaseMembershipApplication,
+  getSupabaseMembershipApplicationById,
+  getSupabaseMembershipApplicationForEmail,
+  listSupabaseMembershipApplications,
+} from "./supabase";
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
@@ -51,7 +51,7 @@ export const appRouter = router({
   }),
   membership: router({
     submitRequest: publicProcedure.input(membershipApplicationInput).mutation(async ({ input }) => {
-      const application = await createMembershipApplication(input);
+      const application = await createSupabaseMembershipApplication(input);
       return {
         applicationId: application?.id,
         status: "pending" as const,
@@ -59,7 +59,7 @@ export const appRouter = router({
     }),
     mine: protectedProcedure.query(async ({ ctx }) => {
       if (!ctx.user.email) return null;
-      return getMembershipApplicationForEmail(ctx.user.email);
+      return getSupabaseMembershipApplicationForEmail(ctx.user.email);
     }),
     activate: publicProcedure
       .input(
@@ -69,7 +69,7 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ input }) => {
-        const application = await activateMembershipApplication(
+        const application = await activateSupabaseMembershipApplication(
           input.id,
           hashActivationCode(input.code)
         );
@@ -85,11 +85,11 @@ export const appRouter = router({
   admin: router({
     applications: protectedProcedure.query(async ({ ctx }) => {
       assertAdmin(ctx.user);
-      return listMembershipApplications();
+      return listSupabaseMembershipApplications();
     }),
     approve: protectedProcedure.input(applicationIdInput).mutation(async ({ ctx, input }) => {
       assertAdmin(ctx.user);
-      const existing = await getMembershipApplicationById(input.id);
+      const existing = await getSupabaseMembershipApplicationById(input.id);
       if (!existing) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Application not found." });
       }
@@ -101,7 +101,7 @@ export const appRouter = router({
       }
 
       const code = randomInt(100000, 1000000).toString();
-      const application = await approveMembershipApplication(input.id, hashActivationCode(code));
+      const application = await approveSupabaseMembershipApplication(input.id, hashActivationCode(code));
       if (!application || application.status !== "approved") {
         throw new TRPCError({
           code: "CONFLICT",
