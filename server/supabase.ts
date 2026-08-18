@@ -14,6 +14,36 @@ type MembershipApplicationRow = {
   activated_at: string | null;
 };
 
+type SupabaseDatabase = {
+  public: {
+    Tables: {
+      membership_applications: {
+        Row: MembershipApplicationRow;
+        Insert: {
+          name: string;
+          email: string;
+          phone: string;
+          status?: MembershipStatus;
+          activation_code_hash?: string | null;
+          approved_at?: string | null;
+          activated_at?: string | null;
+        };
+        Update: {
+          status?: MembershipStatus;
+          activation_code_hash?: string | null;
+          approved_at?: string | null;
+          activated_at?: string | null;
+        };
+        Relationships: [];
+      };
+    };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: { membership_status: MembershipStatus };
+    CompositeTypes: Record<string, never>;
+  };
+};
+
 export type SupabaseMembershipApplication = {
   id: number;
   name: string;
@@ -32,17 +62,24 @@ function requiredEnv(key: "VITE_SUPABASE_URL" | "SUPABASE_SERVICE_ROLE_KEY") {
   return value;
 }
 
-const supabase = createClient(
-  requiredEnv("VITE_SUPABASE_URL"),
-  requiredEnv("SUPABASE_SERVICE_ROLE_KEY"),
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false,
-    },
+let supabaseClient: ReturnType<typeof createClient<SupabaseDatabase>> | null = null;
+
+export function getSupabase() {
+  if (!supabaseClient) {
+    supabaseClient = createClient<SupabaseDatabase>(
+      requiredEnv("VITE_SUPABASE_URL"),
+      requiredEnv("SUPABASE_SERVICE_ROLE_KEY"),
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false,
+        },
+      }
+    );
   }
-);
+  return supabaseClient;
+}
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
@@ -71,7 +108,7 @@ export async function createSupabaseMembershipApplication(input: {
   email: string;
   phone: string;
 }) {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("membership_applications")
     .insert({
       name: input.name.trim(),
@@ -85,7 +122,7 @@ export async function createSupabaseMembershipApplication(input: {
 }
 
 export async function listSupabaseMembershipApplications() {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("membership_applications")
     .select()
     .order("created_at", { ascending: false })
@@ -95,7 +132,7 @@ export async function listSupabaseMembershipApplications() {
 }
 
 export async function getSupabaseMembershipApplicationById(id: number) {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("membership_applications")
     .select()
     .eq("id", id)
@@ -105,7 +142,7 @@ export async function getSupabaseMembershipApplicationById(id: number) {
 }
 
 export async function getSupabaseMembershipApplicationForEmail(email: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("membership_applications")
     .select()
     .eq("email", normalizeEmail(email))
@@ -117,7 +154,7 @@ export async function getSupabaseMembershipApplicationForEmail(email: string) {
 }
 
 export async function approveSupabaseMembershipApplication(id: number, codeHash: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("membership_applications")
     .update({
       status: "approved",
@@ -133,7 +170,7 @@ export async function approveSupabaseMembershipApplication(id: number, codeHash:
 }
 
 export async function activateSupabaseMembershipApplication(id: number, codeHash: string) {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("membership_applications")
     .update({
       status: "active",
@@ -149,4 +186,3 @@ export async function activateSupabaseMembershipApplication(id: number, codeHash
   return data ? mapApplication(data) : null;
 }
 
-export { supabase };
