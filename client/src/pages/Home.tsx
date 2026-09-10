@@ -23,6 +23,7 @@ import {
   LockKeyhole,
   Sparkles,
   TerminalSquare,
+  Smartphone,
 } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
@@ -101,7 +102,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#07070b] text-[#f8f7f3] selection:bg-[#7864ff] selection:text-white">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_82%_8%,rgba(117,94,255,0.22),transparent_24%),radial-gradient(circle_at_12%_48%,rgba(66,190,196,0.08),transparent_26%)]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_82%_8%,rgba(117,94,255,0.22),transparent_24%),radial-gradient(circle_at_12%_48%,rgba(66,190,196,0.08),transpa[...]
       <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-10 md:py-7">
         <button className="brand-mark" onClick={() => scrollTo("top")} aria-label="Back to the top">
           <span className="brand-orb">K</span>
@@ -133,8 +134,8 @@ export default function Home() {
           ) : (
             <Button variant="ghost" onClick={startLogin} className="text-white/70 hover:bg-white/8 hover:text-white">Sign in</Button>
           )}
-          <Button onClick={() => setModal("apply")} className="rounded-full bg-[#7b68ff] px-4 text-white shadow-[0_12px_30px_rgba(119,98,255,0.25)] hover:bg-[#8c7bff] sm:px-5">
-            Apply <ArrowUpRight className="ml-1 h-4 w-4" />
+          <Button onClick={() => navigate("/payment")} className="rounded-full bg-[#ffc107] px-4 text-black font-semibold shadow-[0_12px_30px_rgba(255,193,7,0.25)] hover:bg-[#ffb300] sm:px-5">
+            <Smartphone className="mr-1 h-4 w-4" /> Pay
           </Button>
         </div>
       </header>
@@ -177,9 +178,9 @@ export default function Home() {
                 </div>
                 <div className="flex gap-3">
                   <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#7b68ff] text-xs font-bold">K</span>
-                  <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm bg-[#201e31] px-4 py-3 text-sm leading-6 text-white/72">I drafted the implementation path and kept the sources attached to each choice.</div>
+                  <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm bg-[#201e31] px-4 py-3 text-sm leading-6 text-white/72">I drafted the implementation path and kept the sources attached [...]
                 </div>
-                <div className="flex items-center gap-2 rounded-xl border border-white/9 bg-black/20 px-3 py-3 text-xs text-white/36"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#84eacb]" /> Agent is ready for the next instruction</div>
+                <div className="flex items-center gap-2 rounded-xl border border-white/9 bg-black/20 px-3 py-3 text-xs text-white/36"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#[...]
               </div>
             </div>
           </div>
@@ -190,17 +191,17 @@ export default function Home() {
             <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
               <div>
                 <p className="eyebrow">THE OPERATING RHYTHM</p>
-                <h2 className="mt-5 max-w-2xl font-[var(--font-display)] text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white md:text-6xl">The room between a thought and a shipped result.</h2>
+                <h2 className="mt-5 max-w-2xl font-[var(--font-display)] text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white md:text-6xl">The room between a thought and a shipped[...]
               </div>
               <p className="max-w-xs text-sm leading-6 text-white/48">Designed for people who want the agent to accelerate judgment, not replace it.</p>
             </div>
             <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-white/9 bg-white/9 md:grid-cols-3">
               {steps.map(({ number, icon: Icon, title, text }) => (
                 <article className="group bg-[#0b0b12] p-7 transition-colors hover:bg-[#10101a] md:p-8" key={number}>
-                  <div className="flex items-center justify-between"><span className="text-xs font-medium tracking-[0.16em] text-[#8e7eff]">{number}</span><Icon className="h-5 w-5 text-white/38 transition-transform duration-200 group-hover:-translate-y-1 group-hover:text-white" /></div>
+                  <div className="flex items-center justify-between"><span className="text-xs font-medium tracking-[0.16em] text-[#8e7eff]">{number}</span><Icon className="h-5 w-5 text-white/38 t[...]
                   <h3 className="mt-20 font-[var(--font-display)] text-2xl font-semibold tracking-[-0.045em] text-white">{title}</h3>
                   <p className="mt-3 max-w-xs text-sm leading-6 text-white/48">{text}</p>
-                  <button className="mt-7 flex items-center gap-1 text-xs font-semibold text-white/68 transition-colors hover:text-[#a69aff]" onClick={() => setModal("apply")}>Start here <ArrowUpRight className="h-3.5 w-3.5" /></button>
+                  <button className="mt-7 flex items-center gap-1 text-xs font-semibold text-white/68 transition-colors hover:text-[#a69aff]" onClick={() => setModal("apply")}>Start here <ArrowUp[...]
                 </article>
               ))}
             </div>
@@ -211,11 +212,11 @@ export default function Home() {
           <div>
             <p className="eyebrow">MEMBERSHIP</p>
             <h2 className="mt-5 font-[var(--font-display)] text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white md:text-6xl">A quieter kind of access.</h2>
-            <p className="mt-6 max-w-sm text-sm leading-7 text-white/52">Membership starts with a short request and a human review. When approved, you receive a one-time activation code to complete access.</p>
+            <p className="mt-6 max-w-sm text-sm leading-7 text-white/52">Membership starts with a short request and a human review. When approved, you receive a one-time activation code to comple[...]
           </div>
           <div className="membership-panel">
             <div className="flex items-start justify-between gap-6 border-b border-white/9 pb-6">
-              <div><p className="text-xs font-medium tracking-[0.14em] text-[#a398ff]">EARLY ACCESS</p><h3 className="mt-3 font-[var(--font-display)] text-3xl font-semibold tracking-[-0.045em] text-white">Membership workspace</h3></div>
+              <div><p className="text-xs font-medium tracking-[0.14em] text-[#a398ff]">EARLY ACCESS</p><h3 className="mt-3 font-[var(--font-display)] text-3xl font-semibold tracking-[-0.045em] te[...]
               <LockKeyhole className="h-5 w-5 text-white/42" />
             </div>
             <div className="grid gap-4 py-7 sm:grid-cols-2">
@@ -224,35 +225,35 @@ export default function Home() {
               <p className="feature-line"><CircleCheck className="h-4 w-4" /> Membership status tracking</p>
               <p className="feature-line"><CircleCheck className="h-4 w-4" /> Administrator review queue</p>
             </div>
-            <div className="flex flex-col gap-4 border-t border-white/9 pt-6 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm leading-6 text-white/48">Apply when you are ready to bring a meaningful project.</p><Button onClick={() => setModal("apply")} className="rounded-full bg-[#7b68ff] text-white hover:bg-[#8c7bff]">Request access <ArrowUpRight className="ml-1 h-4 w-4" /></Button></div>
+            <div className="flex flex-col gap-4 border-t border-white/9 pt-6 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm leading-6 text-white/48">Apply when you are read[...]
           </div>
         </section>
 
         <section id="access" className="border-t border-white/8 bg-[#0b0b11]">
           <div className="mx-auto flex max-w-7xl flex-col justify-between gap-8 px-5 py-16 md:flex-row md:items-center md:px-10 md:py-20">
-            <div><p className="eyebrow">YOUR ACCESS</p><h2 className="mt-4 font-[var(--font-display)] text-3xl font-semibold tracking-[-0.045em] text-white">{isAuthenticated ? `Hello, ${user?.name ?? "member"}.` : "Bring your identity when you are ready."}</h2><p className="mt-3 max-w-lg text-sm leading-6 text-white/48">{isAuthenticated ? "Your account is signed in. Membership applications are matched to the email on your account." : "Sign in after approval to see the application associated with your membership email."}</p></div>
+            <div><p className="eyebrow">YOUR ACCESS</p><h2 className="mt-4 font-[var(--font-display)] text-3xl font-semibold tracking-[-0.045em] text-white">{isAuthenticated ? `Hello, ${user?.nam[...]
             <div className="min-w-full rounded-2xl border border-white/9 bg-white/[0.025] p-5 sm:min-w-[350px] md:max-w-sm">
-              <div className="flex items-center justify-between"><span className="text-xs font-medium tracking-[0.14em] text-white/42">MEMBERSHIP STATUS</span><KeyRound className="h-4 w-4 text-[#a398ff]" /></div>
-              <div className="mt-4 flex items-end justify-between"><strong className="font-[var(--font-display)] text-2xl font-semibold tracking-[-0.04em] text-white">{membership.isLoading ? "Checking…" : statusLabel}</strong>{membership.data?.id && <span className="text-xs text-white/38">Application #{membership.data.id}</span>}</div>
+              <div className="flex items-center justify-between"><span className="text-xs font-medium tracking-[0.14em] text-white/42">MEMBERSHIP STATUS</span><KeyRound className="h-4 w-4 text-[#[...]
+              <div className="mt-4 flex items-end justify-between"><strong className="font-[var(--font-display)] text-2xl font-semibold tracking-[-0.04em] text-white">{membership.isLoading ? "Che[...]
               <div className="mt-5 flex gap-2">
-                {!isAuthenticated ? <Button onClick={startLogin} className="flex-1 rounded-full bg-white text-[#15131c] hover:bg-[#ece9ff]">Sign in</Button> : membership.data?.status === "approved" ? <Button onClick={() => { setActivationForm(current => ({ ...current, id: String(membership.data?.id ?? "") })); setModal("activate"); }} className="flex-1 rounded-full bg-[#7b68ff] text-white hover:bg-[#8c7bff]">Activate membership</Button> : <Button onClick={() => setModal("activate")} variant="outline" className="flex-1 rounded-full border-white/15 bg-transparent text-white hover:bg-white/8 hover:text-white">Enter activation code</Button>}
+                {!isAuthenticated ? <Button onClick={startLogin} className="flex-1 rounded-full bg-white text-[#15131c] hover:bg-[#ece9ff]">Sign in</Button> : membership.data?.status === "approve[...]
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-7 text-xs text-white/34 md:flex-row md:items-center md:justify-between md:px-10"><span>© {new Date().getFullYear()} Kimi Agent Membership</span><span>Built for thoughtful work, reviewed by people.</span></footer>
+      <footer className="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-7 text-xs text-white/34 md:flex-row md:items-center md:justify-between md:px-10"><span>© {new Date().getFullY[...]
 
       <Dialog open={modal === "apply"} onOpenChange={open => !open && setModal(null)}>
         <DialogContent className="border-white/10 bg-[#11111a] text-white sm:max-w-md">
-          <DialogHeader><DialogTitle className="font-[var(--font-display)] text-3xl tracking-[-0.04em]">Request membership</DialogTitle><DialogDescription className="leading-6 text-white/48">Tell us where to associate your access request. Applications remain pending until an administrator approves them.</DialogDescription></DialogHeader>
-          {applicationId ? <div className="mt-4 rounded-2xl border border-[#8e7eff]/30 bg-[#8e7eff]/10 p-5"><p className="text-xs font-medium tracking-[0.14em] text-[#b9b1ff]">APPLICATION RECEIVED</p><p className="mt-2 font-[var(--font-display)] text-3xl font-semibold text-white">#{applicationId}</p><p className="mt-3 text-sm leading-6 text-white/58">Save this number. Once approved, enter it with the six-digit activation code provided by your administrator.</p><Button className="mt-5 rounded-full bg-white text-[#16141f] hover:bg-[#ece9ff]" onClick={() => setModal("activate")}>I have a code</Button></div> : <form className="mt-3 space-y-4" onSubmit={submitApplication}><div className="space-y-2"><Label htmlFor="name">Full name</Label><Input id="name" required value={applicationForm.name} onChange={event => setApplicationForm({ ...applicationForm, name: event.target.value })} className="border-white/12 bg-white/[0.04] text-white placeholder:text-white/25" placeholder="Your name" /></div><div className="space-y-2"><Label htmlFor="email">Email</Label><Input id="email" type="email" required value={applicationForm.email} onChange={event => setApplicationForm({ ...applicationForm, email: event.target.value })} className="border-white/12 bg-white/[0.04] text-white placeholder:text-white/25" placeholder="you@example.com" /></div><div className="space-y-2"><Label htmlFor="phone">Phone</Label><Input id="phone" required value={applicationForm.phone} onChange={event => setApplicationForm({ ...applicationForm, phone: event.target.value })} className="border-white/12 bg-white/[0.04] text-white placeholder:text-white/25" placeholder="+1 555 000 0000" /></div><Button disabled={applyMutation.isPending} type="submit" className="mt-2 w-full rounded-full bg-[#7b68ff] text-white hover:bg-[#8c7bff]">{applyMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Submit request</Button></form>}
+          <DialogHeader><DialogTitle className="font-[var(--font-display)] text-3xl tracking-[-0.04em]">Request membership</DialogTitle><DialogDescription className="leading-6 text-white/48">Tell[...]
+          {applicationId ? <div className="mt-4 rounded-2xl border border-[#8e7eff]/30 bg-[#8e7eff]/10 p-5"><p className="text-xs font-medium tracking-[0.14em] text-[#b9b1ff]">APPLICATION RECEIVE[...]
         </DialogContent>
       </Dialog>
 
       <Dialog open={modal === "activate"} onOpenChange={open => !open && setModal(null)}>
-        <DialogContent className="border-white/10 bg-[#11111a] text-white sm:max-w-md"><DialogHeader><DialogTitle className="font-[var(--font-display)] text-3xl tracking-[-0.04em]">Activate access</DialogTitle><DialogDescription className="leading-6 text-white/48">Enter the application number and the six-digit code supplied after approval.</DialogDescription></DialogHeader><form className="mt-3 space-y-4" onSubmit={submitActivation}><div className="space-y-2"><Label htmlFor="application-id">Application number</Label><Input id="application-id" type="number" min="1" required value={activationForm.id} onChange={event => setActivationForm({ ...activationForm, id: event.target.value })} className="border-white/12 bg-white/[0.04] text-white" placeholder="123" /></div><div className="space-y-2"><Label htmlFor="code">Activation code</Label><Input id="code" inputMode="numeric" maxLength={6} required value={activationForm.code} onChange={event => setActivationForm({ ...activationForm, code: event.target.value.replace(/\D/g, "") })} className="border-white/12 bg-white/[0.04] text-white tracking-[0.32em]" placeholder="000000" /></div><Button disabled={activateMutation.isPending} type="submit" className="mt-2 w-full rounded-full bg-[#7b68ff] text-white hover:bg-[#8c7bff]">{activateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Activate membership</Button></form></DialogContent>
+        <DialogContent className="border-white/10 bg-[#11111a] text-white sm:max-w-md"><DialogHeader><DialogTitle className="font-[var(--font-display)] text-3xl tracking-[-0.04em]">Activate acces[...]
       </Dialog>
     </div>
   );
