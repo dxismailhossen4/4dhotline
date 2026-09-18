@@ -1,260 +1,151 @@
-import { useAuth } from "@/_core/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { startLogin } from "@/const";
-import { trpc } from "@/lib/trpc";
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Check,
-  CircleCheck,
-  Code2,
-  Fingerprint,
-  KeyRound,
-  Loader2,
-  LockKeyhole,
-  Sparkles,
-  TerminalSquare,
-  Smartphone,
-} from "lucide-react";
-import { FormEvent, useState } from "react";
-import { toast } from "sonner";
-import { useLocation } from "wouter";
-
-type Modal = "apply" | "activate" | null;
-
-const steps = [
-  {
-    number: "01",
-    icon: TerminalSquare,
-    title: "Plan the work",
-    text: "Turn an ambiguous goal into an auditable execution plan with deliberate checkpoints.",
-  },
-  {
-    number: "02",
-    icon: Code2,
-    title: "Build with context",
-    text: "Keep research, source files, and implementation decisions close to the work they inform.",
-  },
-  {
-    number: "03",
-    icon: Fingerprint,
-    title: "Ship with confidence",
-    text: "Make reviewable changes, verify key paths, and leave a clear record for the next iteration.",
-  },
-];
-
-function scrollTo(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
+import { useState } from "react";
 
 export default function Home() {
-  const { user, loading, isAuthenticated, logout } = useAuth();
-  const [, navigate] = useLocation();
-  const [modal, setModal] = useState<Modal>(null);
-  const [applicationId, setApplicationId] = useState<number | null>(null);
-  const [applicationForm, setApplicationForm] = useState({ name: "", email: "", phone: "" });
-  const [activationForm, setActivationForm] = useState({ id: "", code: "" });
-
-  const utils = trpc.useUtils();
-  const membership = trpc.membership.mine.useQuery(undefined, {
-    enabled: isAuthenticated,
-    refetchOnWindowFocus: false,
-  });
-  const applyMutation = trpc.membership.submitRequest.useMutation({
-    onSuccess: result => {
-      setApplicationId(result.applicationId ?? null);
-      setActivationForm(current => ({ ...current, id: String(result.applicationId ?? "") }));
-      toast.success("Your application has been submitted.");
-    },
-    onError: error => toast.error(error.message),
-  });
-  const activateMutation = trpc.membership.activate.useMutation({
-    onSuccess: () => {
-      toast.success("Membership is active. Welcome to the workspace.");
-      setModal(null);
-      utils.membership.mine.invalidate();
-    },
-    onError: error => toast.error(error.message),
-  });
-
-  const submitApplication = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    applyMutation.mutate(applicationForm);
-  };
-
-  const submitActivation = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    activateMutation.mutate({ id: Number(activationForm.id), code: activationForm.code });
-  };
-
-  const statusLabel = membership.data?.status
-    ? membership.data.status.charAt(0).toUpperCase() + membership.data.status.slice(1)
-    : "No application";
+  const [rememberSession, setRememberSession] = useState(true);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#07070b] text-[#f8f7f3] selection:bg-[#7864ff] selection:text-white">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_82%_8%,rgba(117,94,255,0.22),transparent_24%),radial-gradient(circle_at_12%_48%,rgba(66,190,196,0.08),transpa[...]
-      <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 md:px-10 md:py-7">
-        <button className="brand-mark" onClick={() => scrollTo("top")} aria-label="Back to the top">
-          <span className="brand-orb">K</span>
-          <span>Kimi Agent</span>
-        </button>
-        <nav className="hidden items-center gap-7 text-sm text-white/62 md:flex" aria-label="Primary navigation">
-          <button className="nav-link" onClick={() => scrollTo("workflow")}>Workflow</button>
-          <button className="nav-link" onClick={() => scrollTo("membership")}>Membership</button>
-          <button className="nav-link" onClick={() => scrollTo("access")}>Access</button>
-        </nav>
-        <div className="flex items-center gap-2 sm:gap-3">
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin text-white/50" aria-label="Checking sign-in status" />
-          ) : isAuthenticated ? (
-            <>
-              {user?.role === "admin" && (
-                <Button variant="ghost" onClick={() => navigate("/admin")} className="hidden text-white/70 hover:bg-white/8 hover:text-white sm:inline-flex">
-                  Review queue
-                </Button>
-              )}
-              <Button variant="ghost" onClick={logout} className="hidden text-white/70 hover:bg-white/8 hover:text-white sm:inline-flex">
-                Sign out
-              </Button>
-              <button className="user-chip" onClick={() => scrollTo("access")}>
-                <span>{user?.name?.slice(0, 1).toUpperCase() ?? "M"}</span>
-                <span className="hidden max-w-24 truncate sm:inline">{user?.name ?? "Member"}</span>
-              </button>
-            </>
-          ) : (
-            <Button variant="ghost" onClick={startLogin} className="text-white/70 hover:bg-white/8 hover:text-white">Sign in</Button>
-          )}
-          <Button onClick={() => navigate("/payment")} className="rounded-full bg-[#ffc107] px-4 text-black font-semibold shadow-[0_12px_30px_rgba(255,193,7,0.25)] hover:bg-[#ffb300] sm:px-5">
-            <Smartphone className="mr-1 h-4 w-4" /> Pay
-          </Button>
+    <div className="min-h-screen bg-[#050c14] px-0 py-0 text-[#f5efe7]">
+      <div className="mx-auto min-h-screen w-full max-w-[430px] bg-[#07131f] px-4 pb-2 pt-2 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+        <div className="flex items-center justify-between px-1 pt-1 text-[12px] font-medium text-[#f4efe8]">
+          <span className="ml-1">10:56</span>
+          <div className="flex items-center gap-2 text-[#f4efe8]">
+            <span className="text-[11px]">◔</span>
+            <span className="text-[11px]">◌</span>
+            <span className="text-[11px]">▣</span>
+            <span className="rounded-full bg-[#f4d97d] px-1.5 py-0.5 text-[10px] font-bold text-[#0d1622]">93</span>
+          </div>
         </div>
-      </header>
 
-      <main id="top" className="relative z-10">
-        <section className="mx-auto grid max-w-7xl gap-12 px-5 pb-24 pt-16 md:grid-cols-[1.25fr_0.75fr] md:px-10 md:pb-32 md:pt-24">
-          <div className="max-w-4xl">
-            <div className="eyebrow"><Sparkles className="h-3.5 w-3.5" /> BUILT FOR SERIOUS KNOWLEDGE WORK</div>
-            <h1 className="mt-6 max-w-4xl font-[var(--font-display)] text-5xl font-semibold leading-[0.95] tracking-[-0.065em] text-white sm:text-6xl md:text-8xl">
-              Move from intent <span className="text-[#8e7eff]">to impact.</span>
-            </h1>
-            <p className="mt-7 max-w-xl text-base leading-7 text-white/58 md:text-lg">
-              A calm, capable environment for agentic coding and knowledge work. Start with the work that matters, then make every decision traceable.
-            </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
-              <Button onClick={() => setModal("apply")} size="lg" className="rounded-full bg-white px-6 text-[#15131c] hover:bg-[#ece9ff]">
-                Request membership <ArrowUpRight className="ml-1.5 h-4 w-4" />
-              </Button>
-              <Button onClick={() => scrollTo("workflow")} size="lg" variant="outline" className="rounded-full border-white/15 bg-white/[0.03] px-6 text-white hover:bg-white/10 hover:text-white">
-                Explore the workflow <ArrowDownRight className="ml-1.5 h-4 w-4" />
-              </Button>
+        <div className="mt-4 flex items-center justify-between rounded-full border border-[#1b2d3d] bg-[#101c2b] px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f0efe7] text-[#0b1520]">
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-current">
+                <path d="M12 3.5a7.5 7.5 0 0 1 7.5 7.5V12h-1.5v-1a6 6 0 1 0-12 0v1H4.5v-1A7.5 7.5 0 0 1 12 3.5Zm0 9.5a3 3 0 0 1 3 3v2.5h-6V16a3 3 0 0 1 3-3Zm-7 7v-1.5h14V20H5Z"/>
+              </svg>
             </div>
-            <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-xs font-medium text-white/40">
-              <span className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#8e7eff]" /> Deliberate execution</span>
-              <span className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#8e7eff]" /> Secure review</span>
-              <span className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#8e7eff]" /> Human-controlled access</span>
+            <div className="flex items-center gap-2 overflow-hidden text-[17px] font-medium text-[#f0ece1]">
+              <span className="text-[#d7d1c7]">↻</span>
+              <span className="truncate text-[#f0ece1]">4dhotline.online/login</span>
             </div>
           </div>
-          <div className="relative min-h-[370px] self-end">
-            <div className="hero-orbit hero-orbit-one" />
-            <div className="hero-orbit hero-orbit-two" />
-            <div className="relative mt-5 overflow-hidden rounded-[2rem] border border-white/10 bg-[#101018]/85 p-4 shadow-[0_30px_90px_rgba(0,0,0,0.4)] backdrop-blur-xl sm:p-5">
-              <div className="flex items-center justify-between border-b border-white/8 pb-4 text-[11px] font-medium tracking-[0.12em] text-white/40">
-                <span>WORKSPACE / 03</span><span className="rounded-full bg-[#84eacb]/15 px-2 py-1 text-[#84eacb]">READY</span>
-              </div>
-              <div className="space-y-4 py-5">
-                <div className="rounded-2xl bg-white/[0.05] p-4">
-                  <div className="flex items-center gap-2 text-xs text-white/45"><span className="h-2 w-2 rounded-full bg-[#8e7eff]" /> RESEARCH THREAD</div>
-                  <p className="mt-3 text-sm leading-6 text-white/85">Map the operating model, identify the leverage points, and turn the decision into work.</p>
-                </div>
-                <div className="flex gap-3">
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#7b68ff] text-xs font-bold">K</span>
-                  <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm bg-[#201e31] px-4 py-3 text-sm leading-6 text-white/72">I drafted the implementation path and kept the sources attached [...]
-                </div>
-                <div className="flex items-center gap-2 rounded-xl border border-white/9 bg-black/20 px-3 py-3 text-xs text-white/36"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#[...]
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <section id="workflow" className="border-y border-white/8 bg-white/[0.018]">
-          <div className="mx-auto max-w-7xl px-5 py-20 md:px-10 md:py-28">
-            <div className="flex flex-col justify-between gap-7 md:flex-row md:items-end">
-              <div>
-                <p className="eyebrow">THE OPERATING RHYTHM</p>
-                <h2 className="mt-5 max-w-2xl font-[var(--font-display)] text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white md:text-6xl">The room between a thought and a shipped[...]
-              </div>
-              <p className="max-w-xs text-sm leading-6 text-white/48">Designed for people who want the agent to accelerate judgment, not replace it.</p>
+          <div className="flex items-center gap-3">
+            <button className="text-2xl leading-none text-[#f5efe8]">＋</button>
+            <div className="flex h-7 min-w-[34px] items-center justify-center rounded-full bg-[#f0d67a] px-2 text-[11px] font-bold text-[#0d1822]">
+              20
             </div>
-            <div className="mt-14 grid gap-px overflow-hidden rounded-3xl border border-white/9 bg-white/9 md:grid-cols-3">
-              {steps.map(({ number, icon: Icon, title, text }) => (
-                <article className="group bg-[#0b0b12] p-7 transition-colors hover:bg-[#10101a] md:p-8" key={number}>
-                  <div className="flex items-center justify-between"><span className="text-xs font-medium tracking-[0.16em] text-[#8e7eff]">{number}</span><Icon className="h-5 w-5 text-white/38 t[...]
-                  <h3 className="mt-20 font-[var(--font-display)] text-2xl font-semibold tracking-[-0.045em] text-white">{title}</h3>
-                  <p className="mt-3 max-w-xs text-sm leading-6 text-white/48">{text}</p>
-                  <button className="mt-7 flex items-center gap-1 text-xs font-semibold text-white/68 transition-colors hover:text-[#a69aff]" onClick={() => setModal("apply")}>Start here <ArrowUp[...]
-                </article>
-              ))}
-            </div>
+            <button className="text-xl leading-none text-[#f5efe8]">⋮</button>
           </div>
-        </section>
+        </div>
 
-        <section id="membership" className="mx-auto grid max-w-7xl gap-10 px-5 py-24 md:grid-cols-[0.85fr_1.15fr] md:px-10 md:py-32">
-          <div>
-            <p className="eyebrow">MEMBERSHIP</p>
-            <h2 className="mt-5 font-[var(--font-display)] text-4xl font-semibold leading-[0.98] tracking-[-0.055em] text-white md:text-6xl">A quieter kind of access.</h2>
-            <p className="mt-6 max-w-sm text-sm leading-7 text-white/52">Membership starts with a short request and a human review. When approved, you receive a one-time activation code to comple[...]
+        <div className="relative mt-6 flex items-start justify-between px-1">
+          <div className="flex items-baseline gap-2 text-[#f7f2e9]">
+            <span className="font-serif text-[18px] italic tracking-[-0.03em]">Malaysian Guru</span>
+            <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-[#d7b75d]">4D HOTLINE</span>
           </div>
-          <div className="membership-panel">
-            <div className="flex items-start justify-between gap-6 border-b border-white/9 pb-6">
-              <div><p className="text-xs font-medium tracking-[0.14em] text-[#a398ff]">EARLY ACCESS</p><h3 className="mt-3 font-[var(--font-display)] text-3xl font-semibold tracking-[-0.045em] te[...]
-              <LockKeyhole className="h-5 w-5 text-white/42" />
-            </div>
-            <div className="grid gap-4 py-7 sm:grid-cols-2">
-              <p className="feature-line"><CircleCheck className="h-4 w-4" /> Structured requests and plans</p>
-              <p className="feature-line"><CircleCheck className="h-4 w-4" /> Research-aware execution</p>
-              <p className="feature-line"><CircleCheck className="h-4 w-4" /> Membership status tracking</p>
-              <p className="feature-line"><CircleCheck className="h-4 w-4" /> Administrator review queue</p>
-            </div>
-            <div className="flex flex-col gap-4 border-t border-white/9 pt-6 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm leading-6 text-white/48">Apply when you are read[...]
-          </div>
-        </section>
 
-        <section id="access" className="border-t border-white/8 bg-[#0b0b11]">
-          <div className="mx-auto flex max-w-7xl flex-col justify-between gap-8 px-5 py-16 md:flex-row md:items-center md:px-10 md:py-20">
-            <div><p className="eyebrow">YOUR ACCESS</p><h2 className="mt-4 font-[var(--font-display)] text-3xl font-semibold tracking-[-0.045em] text-white">{isAuthenticated ? `Hello, ${user?.nam[...]
-            <div className="min-w-full rounded-2xl border border-white/9 bg-white/[0.025] p-5 sm:min-w-[350px] md:max-w-sm">
-              <div className="flex items-center justify-between"><span className="text-xs font-medium tracking-[0.14em] text-white/42">MEMBERSHIP STATUS</span><KeyRound className="h-4 w-4 text-[#[...]
-              <div className="mt-4 flex items-end justify-between"><strong className="font-[var(--font-display)] text-2xl font-semibold tracking-[-0.04em] text-white">{membership.isLoading ? "Che[...]
-              <div className="mt-5 flex gap-2">
-                {!isAuthenticated ? <Button onClick={startLogin} className="flex-1 rounded-full bg-white text-[#15131c] hover:bg-[#ece9ff]">Sign in</Button> : membership.data?.status === "approve[...]
+          <div className="relative flex items-center">
+            <span className="select-none text-[72px] font-medium leading-none text-[#f0f2f6]/10" style={{ fontFamily: "Georgia, serif" }}>
+              4
+            </span>
+            <button className="ml-2 flex h-8 w-8 items-center justify-center rounded-full border border-[#30425e] bg-[#091925] text-xl text-[#ece4d1]">
+              ☰
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-7 px-1">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.34em] text-[#d1be74]">Member Access</p>
+
+          <h1
+            className="mt-5 text-[72px] leading-[0.86] tracking-[-0.075em] text-[#f5f1ea]"
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          >
+            Welcome<br />back
+          </h1>
+
+          <p className="mt-4 max-w-[360px] text-[18px] leading-[1.55] text-[#c8c9cf]">
+            Log in to review your membership state, payment history and available member content.
+          </p>
+        </div>
+
+        <div className="mt-8 flex items-center justify-between border-b border-[#d4af37]/70 pb-3 px-1">
+          <div className="flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.24em] text-[#d7b761]">
+            <span>04</span>
+            <span className="tracking-[0.18em] text-[#d9d2c8]">Secure entry</span>
+          </div>
+
+          <div className="flex gap-1">
+            {[0, 0, 0, 0].map((_, index) => (
+              <span
+                key={index}
+                className={`h-2 w-2 rounded-full ${index < 3 ? "bg-[#d4af37]" : "bg-[#d4af37]/30"}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-[18px] border border-[#1f2c3d] bg-[#0d1a26]/90 px-3 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.22em] text-[#d7d3cd]">
+                Email
+              </label>
+              <input
+                type="email"
+                defaultValue="you@example.com"
+                className="w-full rounded-xl border border-[#2b3a49] bg-[#111d2d] px-3 py-3 text-[18px] text-[#f1ede7] outline-none placeholder:text-[#d8d7d4]"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.22em] text-[#d7d3cd]">
+                Password
+              </label>
+              <div className="flex items-center rounded-xl border border-[#2b3a49] bg-[#111d2d] px-3 py-3">
+                <input
+                  type="password"
+                  defaultValue="123456"
+                  className="w-full bg-transparent text-[18px] text-[#f1ede7] outline-none placeholder:text-[#d8d7d4]"
+                  placeholder="Enter password"
+                />
+                <span className="ml-2 text-lg text-[#d2d1ce]">◉</span>
               </div>
             </div>
           </div>
-        </section>
-      </main>
 
-      <footer className="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-7 text-xs text-white/34 md:flex-row md:items-center md:justify-between md:px-10"><span>© {new Date().getFullY[...]
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <label className="flex cursor-pointer items-center gap-2 text-[15px] text-[#f0ece4]">
+              <input
+                type="checkbox"
+                checked={rememberSession}
+                onChange={() => setRememberSession(!rememberSession)}
+                className="h-4 w-4 accent-[#d4af37]"
+              />
+              <span>Remember session</span>
+            </label>
 
-      <Dialog open={modal === "apply"} onOpenChange={open => !open && setModal(null)}>
-        <DialogContent className="border-white/10 bg-[#11111a] text-white sm:max-w-md">
-          <DialogHeader><DialogTitle className="font-[var(--font-display)] text-3xl tracking-[-0.04em]">Request membership</DialogTitle><DialogDescription className="leading-6 text-white/48">Tell[...]
-          {applicationId ? <div className="mt-4 rounded-2xl border border-[#8e7eff]/30 bg-[#8e7eff]/10 p-5"><p className="text-xs font-medium tracking-[0.14em] text-[#b9b1ff]">APPLICATION RECEIVE[...]
-        </DialogContent>
-      </Dialog>
+            <button className="text-[15px] text-[#e9e4dc] underline decoration-[#d4af37]/60 underline-offset-4">
+              Forgot password?
+            </button>
+          </div>
 
-      <Dialog open={modal === "activate"} onOpenChange={open => !open && setModal(null)}>
-        <DialogContent className="border-white/10 bg-[#11111a] text-white sm:max-w-md"><DialogHeader><DialogTitle className="font-[var(--font-display)] text-3xl tracking-[-0.04em]">Activate acces[...]
-      </Dialog>
+          <button className="mt-6 w-full rounded-2xl bg-[#d4af37] px-4 py-3 text-[17px] font-bold uppercase tracking-[0.08em] text-[#0b1722] shadow-[0_10px_30px_rgba(212,175,55,0.35)]">
+            Log in →
+          </button>
+
+          <div className="mt-8 text-center text-[16px] text-[#efe8df]">
+            New here? <button className="font-medium text-[#efe8df] underline decoration-[#d4af37]/60 underline-offset-4">Create account</button>
+          </div>
+        </div>
+
+        <div className="mt-8 flex items-center justify-between px-2 pb-2 pt-2">
+          <button className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-[#0c1824] text-2xl text-[#edf0ec] shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">☰</button>
+          <button className="flex h-14 w-14 items-center justify-center rounded-full border border-[#d5d0c7]/20 bg-[#101c2b] text-3xl text-[#f3ece4]">◌</button>
+          <button className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-[#0c1824] text-2xl text-[#edf0ec] shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">◁</button>
+        </div>
+      </div>
     </div>
   );
 }
+
